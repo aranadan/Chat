@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +62,8 @@ public class ChatFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(adapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         return rootView;
     }
@@ -72,12 +75,10 @@ public class ChatFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(getUnsafeOkHttpClient())
-
                 .build();
 
         ChatServices services = retrofit.create(ChatServices.class);
         Call<ChatRetrofit> call = services.getQuery();
-        Log.e("URL: ", call.request().url().toString());
         call.enqueue(new Callback<ChatRetrofit>() {
             @Override
             public void onResponse(Call<ChatRetrofit> call, Response<ChatRetrofit> response) {
@@ -149,4 +150,20 @@ public class ChatFragment extends Fragment {
             throw new RuntimeException(e);
         }
     }
+    // swipe item in recyclerView
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            //Remove swiped item from list and notify the RecyclerView
+            int position = viewHolder.getAdapterPosition();
+            channels.remove(position);
+            adapter.notifyDataSetChanged();
+        }
+    };
 }
