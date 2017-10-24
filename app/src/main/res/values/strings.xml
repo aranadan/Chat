@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Chat</string>
+    <string name="chat_fragment">Chat</string>
+    <string name="live_chat_fragment">Live Chat</string>
+</resources>
