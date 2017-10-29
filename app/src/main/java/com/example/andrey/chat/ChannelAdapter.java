@@ -1,7 +1,9 @@
 package com.example.andrey.chat;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
